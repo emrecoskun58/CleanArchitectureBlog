@@ -1,43 +1,60 @@
 ﻿using CleanArchitectureBlog.Abstractions;
 using CleanArchitectureBlog.Models.Common;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore;
+using CleanArchitectureBlog.Contexts;
 
 namespace CleanArchitectureBlog.Repositories
 {
     public class WriteRepository<T> : IWriteRepository<T> where T : BaseEntity
     {
-        public ValueTask<bool> AddAsync(T model)
+        private readonly CleanArchitectureDbContext _context;
+
+        public WriteRepository(CleanArchitectureDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public ValueTask<bool> AddRangeAsync(List<T> datas)
+        public DbSet<T> Table => _context.Set<T>();
+
+        public async ValueTask<bool> AddAsync(T model)
         {
-            throw new NotImplementedException();
+            EntityEntry<T> entityEntry = await Table.AddAsync(model);
+            return entityEntry.State == EntityState.Added;
+        }
+
+        public async ValueTask<bool> AddRangeAsync(List<T> datas)
+        {
+            await Table.AddRangeAsync(datas);
+            return true;
         }
 
         public bool Remove(T model)
         {
-            throw new NotImplementedException();
+            model.IsActive = false;
+            EntityEntry<T> entityEntry = Table.Update(model);
+            return entityEntry.State == EntityState.Modified;
         }
 
-        public ValueTask<bool> RemoveAsync(string id)
+        public async ValueTask<bool> RemoveAsync(string id)
         {
-            throw new NotImplementedException();
+            T model = await Table.FirstOrDefaultAsync(data => data.Id == Guid.Parse(id));
+            return Remove(model);
         }
 
         public bool RemoveRange(List<T> datas)
         {
-            throw new NotImplementedException();
+            Table.RemoveRange(datas);
+            return true;
         }
 
-        public ValueTask<int> SaveAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public async ValueTask<int> SaveAsync()
+            => await _context.SaveChangesAsync();
 
         public bool Update(T model)
         {
-            throw new NotImplementedException();
+            EntityEntry<T> entityEntry = Table.Update(model);
+            return entityEntry.State == EntityState.Modified;
         }
     }
 }
