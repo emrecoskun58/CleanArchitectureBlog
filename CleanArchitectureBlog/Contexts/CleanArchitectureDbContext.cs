@@ -45,11 +45,6 @@ namespace CleanArchitectureBlog.Contexts
                 .HasOne(l => l.Blog)
                 .WithMany(b => b.Likes)
                 .HasForeignKey(l => l.BlogId);
-
-            modelBuilder.Entity<BlogImage>()
-                .HasOne(bi => bi.Blog)
-                .WithMany(b => b.BlogImages)
-                .HasForeignKey(bi => bi.BlogId);
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

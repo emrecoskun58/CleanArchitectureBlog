@@ -2,6 +2,7 @@
 using CleanArchitectureBlog.Contexts;
 using CleanArchitectureBlog.Models;
 using CleanArchitectureBlog.ViewModels;
+using Microsoft.Build.Logging;
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitectureBlog.Repositories.BlogRepository
@@ -18,6 +19,7 @@ namespace CleanArchitectureBlog.Repositories.BlogRepository
         {
             var blogs = await _context.Blogs
             .Include(b => b.User)
+            .Where(b => b.IsActive)
             .OrderByDescending(b => b.CreatedAt)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
@@ -30,11 +32,12 @@ namespace CleanArchitectureBlog.Repositories.BlogRepository
                 Order = b.Order,
                 UserId = b.UserId,
                 UserName = b.User.UserName,
-                BlogImages = b.BlogImages.Select(img => new BlogImageViewModel
+                BlogImage = new BlogImageViewModel
                 {
-                    Id = img.Id,
-                    ImageUrl = img.ImageUrl.ToString()
-                }).ToList(),
+                    Id = b.BlogImage.Id,
+                    ImageUrl = b.BlogImage.ImageUrl
+                },
+
                 Comments = b.Comments.Select(c => new CommentViewModel
                 {
                     Id = c.Id,
@@ -59,6 +62,44 @@ namespace CleanArchitectureBlog.Repositories.BlogRepository
                 PageNumber = pageNumber,
                 TotalPages = (int)Math.Ceiling(totalBlogs / (double)pageSize)
             };
+        }
+
+        public async Task<IEnumerable<BlogViewModel>> GetBlogsByUserIdAsync(string Id)
+        {
+            return await _context.Blogs
+                .Where(b => b.UserId == Id)
+                .Where(b => b.IsActive)
+                .Include(b => b.User)
+                .Include(b => b.BlogImage)
+                .Select(b => new BlogViewModel
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    Content = b.Content,
+                    CreatedAt = b.CreatedAt,
+                    Order = b.Order,
+                    UserId = b.UserId,
+                    UserName = b.User.UserName,
+                    BlogImage = new BlogImageViewModel
+                    {
+                        Id = b.BlogImage.Id,
+                        ImageUrl = b.BlogImage.ImageUrl
+                    },
+                    Comments = b.Comments.Select(c => new CommentViewModel
+                    {
+                        Id = c.Id,
+                        Content = c.Content,
+                        UserId = c.UserId,
+                        UserName = c.User.UserName,
+                        CreatedAt = c.CreatedAt
+                    }).ToList(),
+                    Likes = b.Likes.Select(l => new LikeViewModel
+                    {
+                        Id = l.Id,
+                        UserId = l.UserId,
+                        UserName = l.User.UserName
+                    }).ToList()
+                }).ToListAsync();
         }
     }
 }

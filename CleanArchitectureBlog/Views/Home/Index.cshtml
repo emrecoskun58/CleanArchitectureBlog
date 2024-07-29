@@ -11,9 +11,9 @@
         {
             <div class="col">
                 <div class="card h-100">
-                    @if (blog.BlogImages != null && blog.BlogImages.Count > 0)
+                    @if (blog.BlogImage != null)
                     {
-                        <img src="@Url.Content("~/images/user/blog" + blog.BlogImages).First()" class="card-img-top" alt="@blog.Title">
+                        <img src="@Url.Content("~/images/user/blog/" + blog.BlogImage.ImageUrl)" class="card-img-top" alt="@blog.Title">
                     }
                     <div class="card-body">
                         <h5 class="card-title">@blog.Title</h5>

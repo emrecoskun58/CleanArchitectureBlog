@@ -8,7 +8,7 @@ namespace CleanArchitectureBlog.ViewModels
 
         [Required(ErrorMessage = "Content is required")]
         public string Content { get; set; }
-
+        public string BlogId { get; set; }
         public string UserId { get; set; }
 
         [Display(Name = "User Name")]

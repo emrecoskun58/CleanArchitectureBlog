@@ -4,6 +4,7 @@ using CleanArchitectureBlog.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CleanArchitectureBlog.Migrations
 {
     [DbContext(typeof(CleanArchitectureDbContext))]
-    partial class CleanArchitectureDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240729023610_mig_002")]
+    partial class mig_002
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -132,7 +135,7 @@ namespace CleanArchitectureBlog.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Blogs", (string)null);
+                    b.ToTable("Blogs");
                 });
 
             modelBuilder.Entity("CleanArchitectureBlog.Models.BlogImage", b =>
@@ -162,7 +165,7 @@ namespace CleanArchitectureBlog.Migrations
                     b.HasIndex("BlogId")
                         .IsUnique();
 
-                    b.ToTable("BlogImages", (string)null);
+                    b.ToTable("BlogImages");
                 });
 
             modelBuilder.Entity("CleanArchitectureBlog.Models.Comment", b =>
@@ -200,7 +203,7 @@ namespace CleanArchitectureBlog.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("CleanArchitectureBlog.Models.Like", b =>
@@ -231,7 +234,7 @@ namespace CleanArchitectureBlog.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Likes", (string)null);
+                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

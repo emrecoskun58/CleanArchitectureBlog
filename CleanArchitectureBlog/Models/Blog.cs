@@ -10,7 +10,7 @@ namespace CleanArchitectureBlog.Models
         public int Order { get; set; }
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
-        public ICollection<BlogImage> BlogImages { get; set; }
+        public BlogImage BlogImage { get; set; }
         public ICollection<Comment> Comments { get; set; }
         public ICollection<Like> Likes { get; set; }
     }

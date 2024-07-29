@@ -39,7 +39,7 @@ namespace CleanArchitectureBlog.Services
                     await imageFile.CopyToAsync(stream);
                 }
 
-                return filePath;
+                return fileName;
             }
             catch (Exception ex)
             {

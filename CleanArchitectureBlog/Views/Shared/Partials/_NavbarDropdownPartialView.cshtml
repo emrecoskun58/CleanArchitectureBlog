@@ -1,0 +1,13 @@
+﻿<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            @User.Identity?.Name
+        </a>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" asp-action="UserBlogList" asp-controller="Panel">Panel</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" asp-action="Logout" asp-controller="Auth">Logout</a></li>
+        </ul>
+    </li>
+</ul>

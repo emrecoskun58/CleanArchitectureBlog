@@ -1,0 +1,44 @@
+﻿@model IEnumerable<BlogViewModel>
+@{
+    ViewData["Title"] = "UserBlogList";
+    Layout = "~/Views/Shared/_PanelLayout.cshtml";
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Title</th>
+            <th scope="col">Content</th>
+            <th scope="col">Image</th>
+            <th scope="col">Likes</th>
+            <th scope="col">Comments</th>
+            <th scope="col">Created At</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var blog in Model)
+        {
+            <tr>
+
+                <th scope="row">@blog.Id</th>
+                <td>@blog.Title</td>
+                <td>@blog.Content</td>
+                <td>
+                    @if (blog.BlogImage != null)
+                    {
+                        <img src="@Url.Content("~/images/user/blog/" + blog.BlogImage.ImageUrl)" alt="@blog.Title" style="width:80px">
+                    }
+                </td>
+                <td>@blog.Likes.Count</td>
+                <td>@blog.Comments.Count</td>
+                <td>@blog.CreatedAt</td>
+                <td><a>Update</a> | <a asp-action="DeleteBlog" asp-controller="Panel" asp-route-Id="@blog.Id">Delete</a></td>
+
+
+            </tr>
+        }
+    </tbody>
+</table>
+
