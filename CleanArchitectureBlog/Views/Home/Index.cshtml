@@ -1,8 +1,52 @@
-﻿@{
+﻿@model PaginatedBlogViewModel
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <h2>Blog Posts</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var blog in Model.Blogs)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    @if (blog.BlogImages != null && blog.BlogImages.Count > 0)
+                    {
+                        <img src="@Url.Content("~/images/user/blog" + blog.BlogImages).First()" class="card-img-top" alt="@blog.Title">
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@blog.Title</h5>
+                        <p class="card-text">@blog.Content</p>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-body-secondary">Posted by @blog.UserName on @blog.CreatedAt.ToShortDateString()</small>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center mt-4">
+            @if (Model.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageNumber - 1, pageSize = ViewData["PageSize"] })">Previous</a>
+                </li>
+            }
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { pageNumber = i, pageSize = ViewData["PageSize"] })">@i</a>
+                </li>
+            }
+            @if (Model.HasNextPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageNumber + 1, pageSize = ViewData["PageSize"] })">Next</a>
+                </li>
+            }
+        </ul>
+    </nav>
 </div>

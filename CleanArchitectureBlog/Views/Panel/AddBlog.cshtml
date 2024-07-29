@@ -1,0 +1,32 @@
+﻿@model CreateBlogViewModel
+@{
+    ViewData["Title"] = "AddBlog";
+    Layout = "~/Views/Shared/_PanelLayout.cshtml";
+}
+<div class="container">
+    <h2>Add New Blog</h2>
+    <form asp-action="AddBlog" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="UserId" value="0"/>
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Content" class="form-label"></label>
+            <textarea asp-for="Content" class="form-control"></textarea>
+            <span asp-validation-for="Content" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Order" class="form-label"></label>
+            <input asp-for="Order" class="form-control" />
+            <span asp-validation-for="Order" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="BlogImages" class="form-label">Upload Image</label>
+            <input asp-for="BlogImages" type="file" class="form-control" />
+            <span asp-validation-for="BlogImages" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Blog</button>
+    </form>
+</div>

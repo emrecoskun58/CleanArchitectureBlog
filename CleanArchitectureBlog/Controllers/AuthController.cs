@@ -30,11 +30,22 @@ namespace CleanArchitectureBlog.Controllers
                 {
                     string username = loginViewModel.UserName;
                     HttpContext.Session.SetString("UserName", username);
+                    var cookieOptions = new CookieOptions
+                    {
+                        Expires = DateTime.Now.AddMinutes(30)
+                    };
+                    Response.Cookies.Append("UserName", username, cookieOptions);
                     return RedirectToAction("Index", "Panel");
                 }
                 ModelState.AddModelError(string.Empty, "Wrong username or password");
             }
             return View(loginViewModel);
+        }
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login", "Auth");
         }
         [HttpGet]
         public IActionResult Register()

@@ -1,3 +1,4 @@
+using CleanArchitectureBlog.Abstractions.Repositories.BlogRepository;
 using CleanArchitectureBlog.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -7,15 +8,19 @@ namespace CleanArchitectureBlog.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IBlogReadRepository _blogReadRepository;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IBlogReadRepository blogReadRepository)
         {
             _logger = logger;
+            _blogReadRepository = blogReadRepository;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
         {
-            return View();
+            var blogs = await _blogReadRepository.GetBlogsAsync(pageNumber, pageSize);
+            ViewData["PageSize"] = pageSize;
+            return View(blogs);
         }
 
         public IActionResult Privacy()
