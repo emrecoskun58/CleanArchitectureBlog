@@ -15,7 +15,7 @@ namespace CleanArchitectureBlog.Controllers
             _logger = logger;
             _blogReadRepository = blogReadRepository;
         }
-
+        [HttpGet]
         public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
         {
             var blogs = await _blogReadRepository.GetBlogsAsync(pageNumber, pageSize);

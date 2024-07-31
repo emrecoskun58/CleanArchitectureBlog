@@ -26,5 +26,11 @@ namespace CleanArchitectureBlog.Repositories.CommentRepository
             }).ToListAsync();
             return comments;
         }
+
+        public async Task<bool> HasUserCommentedOnBlogAsync(Guid blogId, string userId)
+        {
+            return await _context.Comments
+                .AnyAsync(c => c.BlogId == blogId && c.UserId == userId);
+        }
     }
 }

@@ -36,6 +36,23 @@ namespace CleanArchitectureBlog.Controllers
             _imageService = imageService;
             _userManager = userManager;
         }
+        [HttpGet]
+        public async Task<IActionResult> BlogDetail(string Id)
+        {
+            var blog = await _blogReadRepository.GetByIdAsync(Id);
+            BlogViewModel blogViewModel = new BlogViewModel
+            {
+                Id = blog.Id,
+                Title = blog.Title,
+                Content = blog.Content,
+                Order = blog.Order,
+                UserId = blog.UserId,
+                Likes = await _likeReadRepository.GetLikesByBlogIdAsync(Id),
+                Comments = await _commentReadRepository.GetCommentsByBlogIdAsync(Id),
+                BlogImage = await _blogImageReadRepository.GetBlogImageByBlogAsync(Id)
+            };
+            return View(blogViewModel);
+        }
 
         [HttpGet]
         public async Task<IActionResult> UserBlogList()

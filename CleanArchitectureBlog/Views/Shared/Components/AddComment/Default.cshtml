@@ -1,0 +1,11 @@
+﻿@model CommentInputViewModel
+
+<h4>Add a Comment</h4>
+<form asp-action="AddComment" asp-controller="Comment" method="post">
+    <div class="mb-3">
+        <textarea asp-for="Content" class="form-control" placeholder="Write your comment here..."></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+    <input type="hidden" asp-for="BlogId" />
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

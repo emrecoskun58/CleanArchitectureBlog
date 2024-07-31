@@ -1,0 +1,38 @@
+﻿@model BlogViewModel
+@{
+    ViewData["Title"] = Model.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="card mb-3">
+        @if (Model.BlogImage != null)
+        {
+            <img src="@Url.Content("~/images/user/blog/" + Model.BlogImage.ImageUrl)" class="card-img-top" alt="@Model.Title" width="300px">
+        }
+        <div class="card-body">
+            <h5 class="card-title">@Model.Title</h5>
+            <p class="card-text">@Model.Content</p>
+            <p class="card-text"><small class="text-body-secondary">Posted by @Model.UserName on @Model.CreatedAt.ToShortDateString()</small></p>
+            <p class="card-text"><small class="text-body-secondary">Likes: @Model.Likes.Count</small></p>
+        </div>
+    </div>
+
+    <h4>Comments</h4>
+    @foreach (var comment in Model.Comments)
+    {
+        <div class="mb-3">
+            <p>@comment.Content</p>
+            <p><small class="text-body-secondary">Posted by @comment.UserName on @comment.CreatedAt.ToShortDateString()</small></p>
+        </div>
+    }
+    @if (User.Identity.IsAuthenticated)
+    {
+        @await Component.InvokeAsync("AddComment", new { blogId = Model.Id })
+    }
+
+</div>
+
+
+
+
