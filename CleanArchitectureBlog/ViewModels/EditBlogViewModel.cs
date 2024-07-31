@@ -2,7 +2,7 @@
 
 namespace CleanArchitectureBlog.ViewModels
 {
-    public class CreateBlogViewModel
+    public class EditBlogViewModel
     {
         public Guid Id { get; set; }
 
@@ -23,5 +23,6 @@ namespace CleanArchitectureBlog.ViewModels
         public string UserId { get; set; }
 
         public IFormFile BlogImage { get; set; }
+        public string ImageUrl { get; set; }
     }
 }

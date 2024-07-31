@@ -34,7 +34,7 @@
                 <td>@blog.Likes.Count</td>
                 <td>@blog.Comments.Count</td>
                 <td>@blog.CreatedAt</td>
-                <td><a>Update</a> | <a asp-action="DeleteBlog" asp-controller="Panel" asp-route-Id="@blog.Id">Delete</a></td>
+                <td><a asp-action="EditBlog" asp-controller="Blog" asp-route-Id="@blog.Id">Update</a> | <a asp-action="DeleteBlog" asp-controller="Blog" asp-route-Id="@blog.Id">Delete</a></td>
 
 
             </tr>

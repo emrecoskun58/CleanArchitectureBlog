@@ -1,5 +1,6 @@
 ﻿using CleanArchitectureBlog.Abstractions.Repositories.BlogRepository;
 using CleanArchitectureBlog.Abstractions.Services;
+using Microsoft.AspNetCore.Hosting;
 
 namespace CleanArchitectureBlog.Services
 {
@@ -14,6 +15,29 @@ namespace CleanArchitectureBlog.Services
             _configuration = configuration;
             _blogReadRepository = blogReadRepository;
             _logger = logger;
+        }
+
+        public async Task<string> DeleteImageAsync(string imageUrl)
+        {
+            try
+            {
+                var filePath = Path.Combine(_configuration["Path:UserBlogPath"], imageUrl);
+
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                    return "Image deleted successfully.";
+                }
+                else
+                {
+                    return "Image not found.";
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while deleting the image.");
+                throw;
+            }
         }
 
         public async Task<string> SaveImageAsync(IFormFile imageFile, string blogId)
@@ -47,5 +71,6 @@ namespace CleanArchitectureBlog.Services
                 throw;
             }
         }
+
     }
 }

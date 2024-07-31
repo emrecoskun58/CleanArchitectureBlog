@@ -1,0 +1,40 @@
+﻿@model EditBlogViewModel
+@{
+    ViewData["Title"] = "EditBlog";
+    Layout = "~/Views/Shared/_PanelLayout.cshtml";
+}
+<div class="container">
+    <h2>Edit New Blog</h2>
+
+    <form asp-action="EditBlog" method="post" enctype="multipart/form-data">
+
+        <input type="hidden" asp-for="UserId" value="@Model.UserId" />
+        <input type="hidden" asp-for="Id" value="@Model.Id" />
+        <input type="hidden" asp-for="ImageUrl" value="@Model.ImageUrl"/>
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Content" class="form-label"></label>
+            <textarea asp-for="Content" class="form-control"></textarea>
+            <span asp-validation-for="Content" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Order" class="form-label"></label>
+            <input asp-for="Order" class="form-control" />
+            <span asp-validation-for="Order" class="text-danger"></span>
+        </div>
+        <div>
+            <img src="@Url.Content("~/images/user/blog/" + Model.ImageUrl)" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="BlogImage" class="form-label">Upload Image</label>
+            <input asp-for="BlogImage" type="file" class="form-control" />
+            <span asp-validation-for="BlogImage" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Edit Blog</button>
+    </form>
+</div>
+
