@@ -4,6 +4,7 @@ using CleanArchitectureBlog.Models;
 using CleanArchitectureBlog.ViewModels;
 using Microsoft.Build.Logging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CleanArchitectureBlog.Repositories.BlogRepository
 {
@@ -32,6 +33,7 @@ namespace CleanArchitectureBlog.Repositories.BlogRepository
                 Order = b.Order,
                 UserId = b.UserId,
                 UserName = b.User.UserName,
+                Slug = b.Slug,
                 BlogImage = new BlogImageViewModel
                 {
                     Id = b.BlogImage.Id,
@@ -80,6 +82,7 @@ namespace CleanArchitectureBlog.Repositories.BlogRepository
                     Order = b.Order,
                     UserId = b.UserId,
                     UserName = b.User.UserName,
+                    Slug = b.Slug,
                     BlogImage = new BlogImageViewModel
                     {
                         Id = b.BlogImage.Id,
@@ -100,6 +103,56 @@ namespace CleanArchitectureBlog.Repositories.BlogRepository
                         UserName = l.User.UserName
                     }).ToList()
                 }).ToListAsync();
+        }
+
+        public async Task<BlogViewModel> GetBlogBySlugAsync(string slug)
+        {
+            return await _context.Blogs
+                .Where(b => b.Slug == slug && b.IsActive)
+                .Include(b => b.User)
+                .Include(b => b.BlogImage)
+                .Include(b => b.Comments)
+                    .ThenInclude(c => c.User)
+                .Include(b => b.Likes)
+                    .ThenInclude(l => l.User)
+                .Select(b => new BlogViewModel
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    Slug = b.Slug,
+                    Content = b.Content,
+                    CreatedAt = b.CreatedAt,
+                    Order = b.Order,
+                    UserId = b.UserId,
+                    UserName = b.User.UserName,
+                    BlogImage = b.BlogImage != null ? new BlogImageViewModel
+                    {
+                        Id = b.BlogImage.Id,
+                        ImageUrl = b.BlogImage.ImageUrl
+                    } : null,
+                    Comments = b.Comments.Select(c => new CommentViewModel
+                    {
+                        Id = c.Id,
+                        Content = c.Content,
+                        UserId = c.UserId,
+                        UserName = c.User.UserName,
+                        CreatedAt = c.CreatedAt
+                    }).ToList(),
+                    Likes = b.Likes.Select(l => new LikeViewModel
+                    {
+                        Id = l.Id,
+                        UserId = l.UserId,
+                        UserName = l.User.UserName
+                    }).ToList()
+                }).FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> GetBlogsForTitle(string title)
+        {
+            var result = _context.Blogs.Where(x => x.Title == title);
+            if (!result.IsNullOrEmpty())
+                return true;
+            return false;
         }
     }
 }

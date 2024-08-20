@@ -63,13 +63,25 @@ namespace CleanArchitectureBlog
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
-
             app.UseSession();
 
-             app.Run();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "blogDetail",
+                    pattern: "blogDetail/{slug}",
+                    defaults: new { controller = "BlogDetail", action = "BlogDetail" });
+
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
+
+
+
+
+
+            app.Run();
         }
     }
 }

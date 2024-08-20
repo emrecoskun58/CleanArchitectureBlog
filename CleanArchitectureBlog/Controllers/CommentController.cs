@@ -4,6 +4,7 @@ using CleanArchitectureBlog.Models;
 using CleanArchitectureBlog.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata;
 
 namespace CleanArchitectureBlog.Controllers
 {
@@ -31,6 +32,7 @@ namespace CleanArchitectureBlog.Controllers
         [HttpPost]
         public async Task<IActionResult> AddComment(CommentInputViewModel model)
         {
+            var blog = await _blogReadRepository.GetByIdAsync(model.BlogId.ToString());
             if (ModelState.IsValid)
             {
                 var userName = Request.Cookies["UserName"];
@@ -49,7 +51,7 @@ namespace CleanArchitectureBlog.Controllers
                 if (hasCommented)
                 {
                     ModelState.AddModelError("", "You have already commented on this blog post.");
-                    return RedirectToAction("BlogDetail", "Blog", new { Id = model.BlogId });
+                    return RedirectToAction("BlogDetail", "BlogDetail", new { slug = blog.Slug });
                 }
 
                 var comment = new Comment
@@ -63,10 +65,10 @@ namespace CleanArchitectureBlog.Controllers
                 await _commentWriteRepository.AddAsync(comment);
                 await _commentWriteRepository.SaveAsync();
 
-                return RedirectToAction("BlogDetail", "Blog", new { Id = model.BlogId });
+                return RedirectToAction("BlogDetail", "BlogDetail", new { slug = blog.Slug });
             }
 
-            return RedirectToAction("BlogDetail", "Blog", new { Id = model.BlogId });
+            return RedirectToAction("BlogDetail", "BlogDetail", new { slug = blog.Slug });
         }
     }
 }

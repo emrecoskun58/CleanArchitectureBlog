@@ -25,6 +25,8 @@ namespace CleanArchitectureBlog.ViewModels
         [Display(Name = "User Name")]
         public string UserName { get; set; }
 
+        public string Slug { get; set; }
+
         public BlogImageViewModel BlogImage { get; set; }
         public ICollection<CommentViewModel> Comments { get; set; }
         public ICollection<LikeViewModel> Likes { get; set; }

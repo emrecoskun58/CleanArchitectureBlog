@@ -13,5 +13,6 @@ namespace CleanArchitectureBlog.Models
         public BlogImage BlogImage { get; set; }
         public ICollection<Comment> Comments { get; set; }
         public ICollection<Like> Likes { get; set; }
+        public string Slug { get; set; }
     }
 }

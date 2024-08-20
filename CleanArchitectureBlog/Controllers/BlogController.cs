@@ -3,6 +3,7 @@ using CleanArchitectureBlog.Abstractions.Repositories.BlogRepository;
 using CleanArchitectureBlog.Abstractions.Repositories.CommentRepository;
 using CleanArchitectureBlog.Abstractions.Repositories.LikeRepository;
 using CleanArchitectureBlog.Abstractions.Services;
+using CleanArchitectureBlog.Helpers;
 using CleanArchitectureBlog.Models;
 using CleanArchitectureBlog.ViewModels;
 using Microsoft.AspNetCore.Identity;
@@ -36,23 +37,6 @@ namespace CleanArchitectureBlog.Controllers
             _imageService = imageService;
             _userManager = userManager;
         }
-        [HttpGet]
-        public async Task<IActionResult> BlogDetail(string Id)
-        {
-            var blog = await _blogReadRepository.GetByIdAsync(Id);
-            BlogViewModel blogViewModel = new BlogViewModel
-            {
-                Id = blog.Id,
-                Title = blog.Title,
-                Content = blog.Content,
-                Order = blog.Order,
-                UserId = blog.UserId,
-                Likes = await _likeReadRepository.GetLikesByBlogIdAsync(Id),
-                Comments = await _commentReadRepository.GetCommentsByBlogIdAsync(Id),
-                BlogImage = await _blogImageReadRepository.GetBlogImageByBlogAsync(Id)
-            };
-            return View(blogViewModel);
-        }
 
         [HttpGet]
         public async Task<IActionResult> UserBlogList()
@@ -76,7 +60,7 @@ namespace CleanArchitectureBlog.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> AddBlog(EditBlogViewModel blogViewModel)
+        public async Task<IActionResult> AddBlog(CreateBlogViewModel blogViewModel)
         {
 
             if (ModelState.IsValid)
@@ -101,9 +85,12 @@ namespace CleanArchitectureBlog.Controllers
                     Order = blogViewModel.Order,
                     UserId = user.Id,
                     User = user,
+                    Slug = SlugHelper.Slugify(blogViewModel.Title)
 
                 };
-
+                bool value = await _blogReadRepository.GetBlogsForTitle(blogViewModel.Title);
+                if(value)
+                    return RedirectToAction("AddBlog", "Blog");
                 await _blogWriteRepository.AddAsync(blog);
                 await _blogWriteRepository.SaveAsync();
 
@@ -120,7 +107,7 @@ namespace CleanArchitectureBlog.Controllers
                     await _blogImageWriteRepository.SaveAsync();
                 }
 
-                return RedirectToAction("Index");
+                return RedirectToAction("UserBlogList","Blog");
             }
             return View(blogViewModel);
         }
@@ -138,7 +125,8 @@ namespace CleanArchitectureBlog.Controllers
                 Content = blog.Content,
                 Order = blog.Order,
                 ImageUrl = blogImage.ImageUrl,
-                UserId = blog.UserId
+                UserId = blog.UserId,
+                
             };
             return View(blogViewModel);
         }
@@ -151,8 +139,17 @@ namespace CleanArchitectureBlog.Controllers
                 if (blog == null)
                     return NotFound();
                 blog.Title = blogViewModel.Title;
+                if (blog.Title != blogViewModel.Title)
+                {
+                    blog.Title = blogViewModel.Title;
+                    blog.Slug = SlugHelper.Slugify(blog.Title);
+                }
+
                 blog.Content = blogViewModel.Content;
                 blog.Order = blogViewModel.Order;
+                bool value = await _blogReadRepository.GetBlogsForTitle(blogViewModel.Title);
+                if (value)
+                    return RedirectToAction("EditBlog", "Blog");
                 _blogWriteRepository.Update(blog);
                 await _blogWriteRepository.SaveAsync();
 
@@ -200,6 +197,7 @@ namespace CleanArchitectureBlog.Controllers
             {
                 await _commentWriteRepository.RemoveAsync(comment.Id.ToString());
             }
+            await _imageService.DeleteImageAsync(blogImage.ImageUrl);
             await _blogWriteRepository.SaveAsync();
 
             return RedirectToAction("UserBlogList", "Blog");

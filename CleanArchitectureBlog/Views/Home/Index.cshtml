@@ -16,7 +16,7 @@
                         <img src="@Url.Content("~/images/user/blog/" + blog.BlogImage.ImageUrl)" class="card-img-top" alt="@blog.Title">
                     }
                     <div class="card-body">
-                        <h5 class="card-title"><a asp-action="BlogDetail" asp-controller="Blog" asp-route-Id="@blog.Id">@blog.Title</a></h5>
+                        <h5 class="card-title"><a asp-action="BlogDetail" asp-controller="BlogDetail" asp-route-slug="@blog.Slug">@blog.Title</a></h5>
                         <p class="card-text">@blog.Content</p>
                     </div>
                     <div class="card-footer">
