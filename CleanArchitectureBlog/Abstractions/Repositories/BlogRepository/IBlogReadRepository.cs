@@ -10,5 +10,7 @@ namespace CleanArchitectureBlog.Abstractions.Repositories.BlogRepository
         Task<BlogViewModel> GetBlogBySlugAsync(string slug);
 
         Task<bool> GetBlogsForTitle(string title);
+
+        Task<IEnumerable<BlogViewModel>> GetBlogsAsyncForAdmin();
     }
 }

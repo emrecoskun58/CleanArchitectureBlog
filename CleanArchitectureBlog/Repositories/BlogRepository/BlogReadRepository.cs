@@ -154,5 +154,43 @@ namespace CleanArchitectureBlog.Repositories.BlogRepository
                 return true;
             return false;
         }
+
+        public async Task<IEnumerable<BlogViewModel>> GetBlogsAsyncForAdmin()
+        {
+            return await _context.Blogs
+                .Where(b => b.IsActive)
+                .Include(b => b.User)
+                .Include(b => b.BlogImage)
+                .Select(b => new BlogViewModel
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    Content = b.Content,
+                    CreatedAt = b.CreatedAt,
+                    UserId = b.UserId,
+                    UserName = b.User.UserName,
+                    Slug = b.Slug,
+                    BlogImage = b.BlogImage != null ? new BlogImageViewModel
+                    {
+                        Id = b.BlogImage.Id,
+                        ImageUrl = b.BlogImage.ImageUrl
+                    } : null,
+                    Comments = b.Comments.Select(c => new CommentViewModel
+                    {
+                        Id = c.Id,
+                        Content = c.Content,
+                        UserId = c.UserId,
+                        UserName = c.User.UserName,
+                        CreatedAt = c.CreatedAt
+                    }).ToList(),
+                    Likes = b.Likes.Select(l => new LikeViewModel
+                    {
+                        Id = l.Id,
+                        UserId = l.UserId,
+                        UserName = l.User.UserName
+                    }).ToList()
+                }).ToListAsync();
+        }
+
     }
 }

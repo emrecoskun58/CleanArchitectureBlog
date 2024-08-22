@@ -2,6 +2,7 @@
 using CleanArchitectureBlog.Abstractions.Repositories.CommentRepository;
 using CleanArchitectureBlog.Models;
 using CleanArchitectureBlog.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata;
@@ -30,6 +31,7 @@ namespace CleanArchitectureBlog.Controllers
             return View();
         }
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddComment(CommentInputViewModel model)
         {
             var blog = await _blogReadRepository.GetByIdAsync(model.BlogId.ToString());

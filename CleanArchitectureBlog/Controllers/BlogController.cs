@@ -6,6 +6,7 @@ using CleanArchitectureBlog.Abstractions.Services;
 using CleanArchitectureBlog.Helpers;
 using CleanArchitectureBlog.Models;
 using CleanArchitectureBlog.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,8 +38,16 @@ namespace CleanArchitectureBlog.Controllers
             _imageService = imageService;
             _userManager = userManager;
         }
+        [HttpGet]
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> List()
+        {
+            IEnumerable<BlogViewModel> blogs = await _blogReadRepository.GetBlogsAsyncForAdmin();
+            return View(blogs);
+        }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> UserBlogList()
         {
             var userName = Request.Cookies["UserName"];
@@ -55,11 +64,13 @@ namespace CleanArchitectureBlog.Controllers
             return View(blogs);
         }
         [HttpGet]
+        [Authorize]
         public IActionResult AddBlog()
         {
             return View();
         }
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddBlog(CreateBlogViewModel blogViewModel)
         {
 
@@ -112,6 +123,7 @@ namespace CleanArchitectureBlog.Controllers
             return View(blogViewModel);
         }
         [HttpGet]
+        [Authorize]
         public IActionResult EditBlog(string Id)
         {
             var blog = _blogReadRepository.GetByIdAsync(Id).Result;
@@ -131,6 +143,7 @@ namespace CleanArchitectureBlog.Controllers
             return View(blogViewModel);
         }
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> EditBlog(EditBlogViewModel blogViewModel)
         {
             if (ModelState.IsValid)
@@ -177,8 +190,8 @@ namespace CleanArchitectureBlog.Controllers
             }
             return View(blogViewModel);
         }
-
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> DeleteBlog(string id)
         {
             var blog = await _blogReadRepository.GetByIdAsync(id);
